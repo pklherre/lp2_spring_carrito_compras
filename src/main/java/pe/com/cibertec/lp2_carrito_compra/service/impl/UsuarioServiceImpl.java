@@ -31,9 +31,22 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	@Override
-	public boolean validarUsuario(UsuarioEntity usuarioEntity) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean validarUsuario(UsuarioEntity usuarioFormulario) {
+		//1. Buscar correo en base de datos
+			UsuarioEntity usuarioEncontrado = usuarioRepository
+					.findByCorreo(usuarioFormulario.getCorreo());
+		
+		// 2. Correo existe
+			if(usuarioEncontrado == null) {
+				return false;
+			}
+		// 3. Validar si el password del formulario hace match con el hash de la base de datos
+			if(!Utilitarios.checkPassword(usuarioFormulario.getPassword(),
+					usuarioEncontrado.getPassword())) {
+				return false;
+			}
+
+		return true;
 	}
 
 }
